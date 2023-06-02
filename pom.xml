@@ -175,6 +175,7 @@
         <module>appengine</module>
         <module>cloud-datastore</module>
         <module>cloud-storage</module>
+        <module>cloud-spanner</module>
         <module>mongodb</module>
         <module>testing</module>
         <module>junit</module>
