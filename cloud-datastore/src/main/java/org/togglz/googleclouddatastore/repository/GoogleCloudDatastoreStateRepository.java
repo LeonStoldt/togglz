@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * <p>
  * This repository implementation can be used to store the feature state
- * in <a href="https://cloud.google.com/datastore/docs/">Google Cloud Datastore</>
+ * in <a href="https://cloud.google.com/datastore/docs/">Google Cloud Datastore<a/>
  * </p>
  *
  * <p>
