@@ -1,4 +1,4 @@
-package org.togglz.googlecloudspanner.repository;
+package org.togglz.googlecloudspanner;
 
 import com.google.cloud.spanner.DatabaseId;
 import jakarta.inject.Inject;
@@ -10,6 +10,19 @@ import org.togglz.core.repository.StateRepository;
 
 import static org.togglz.googlecloudspanner.config.FeatureInitializer.DEFAULT_FEATURE_STATE;
 
+/**
+ * <p>
+ * This state repository implementation handles feature state access and persistence
+ * in <a href="https://cloud.google.com/spanner/docs/">Google Cloud Spanner</a>
+ * </p>
+ *
+ * <p>
+ * {@link SpannerStateRepository} stores the feature state in a separate table called FeatureToggle by default.
+ * If you want to use a custom table name, it can be provided as parameter in the constructor.
+ * </p>
+ *
+ * @author Leon Stoldt
+ */
 public class SpannerStateRepository implements StateRepository {
 
     private static final Logger log = LoggerFactory.getLogger(SpannerStateRepository.class);
@@ -25,7 +38,16 @@ public class SpannerStateRepository implements StateRepository {
 
     @Inject
     public SpannerStateRepository(String project, String instance, String database, String tableName) {
-        var databaseId = DatabaseId.of(project, instance, database);
+        this(DatabaseId.of(project, instance, database), tableName);
+    }
+
+    @Inject
+    public SpannerStateRepository(DatabaseId databaseId) {
+        this(databaseId, DEFAULT_TABLE_NAME);
+    }
+
+    @Inject
+    public SpannerStateRepository(DatabaseId databaseId, String tableName) {
         this.featureRepository = new FeatureRepository(databaseId, tableName);
     }
 
@@ -37,7 +59,7 @@ public class SpannerStateRepository implements StateRepository {
             log.debug("Found feature = {} with state enabled = {}", feature, featureState);
             return new FeatureState(feature, featureState);
         }
-        log.warn("Feature state for feature = {} not found.", feature);
+        log.warn("Feature state for feature = {} not found. Using default feature state = {}", feature, DEFAULT_FEATURE_STATE);
         return new FeatureState(feature, DEFAULT_FEATURE_STATE);
     }
 

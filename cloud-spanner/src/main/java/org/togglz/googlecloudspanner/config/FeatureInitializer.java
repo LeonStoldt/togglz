@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.togglz.core.Feature;
 import org.togglz.core.repository.FeatureState;
-import org.togglz.googlecloudspanner.repository.FeatureRepository;
+import org.togglz.googlecloudspanner.FeatureRepository;
 
 public class FeatureInitializer {
     private static final Logger log = LoggerFactory.getLogger(FeatureInitializer.class);

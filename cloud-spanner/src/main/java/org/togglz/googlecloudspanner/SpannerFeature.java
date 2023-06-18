@@ -1,4 +1,4 @@
-package org.togglz.googlecloudspanner.entity;
+package org.togglz.googlecloudspanner;
 
 public record SpannerFeature(
         String name,

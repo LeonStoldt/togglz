@@ -1,4 +1,4 @@
-package org.togglz.googlecloudspanner.repository;
+package org.togglz.googlecloudspanner;
 
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
@@ -8,11 +8,22 @@ import com.google.cloud.spanner.Statement;
 import org.togglz.core.repository.FeatureState;
 import org.togglz.core.repository.util.DefaultMapSerializer;
 import org.togglz.core.repository.util.MapSerializer;
-import org.togglz.googlecloudspanner.entity.SpannerFeature;
 
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * <p>
+ * This repository implementation handles spanner calls to query and upsert features to spanner table.
+ * </p>
+ *
+ * <p>
+ * It uses the official Google Cloud Spanner Java {@link DatabaseClient} to access the spanner interface.
+ * </p>
+ *
+ * @author Leon Stoldt
+ */
 public class FeatureRepository {
     public static final String SELECT_FEATURE_FROM = "SELECT * FROM ";
     public static final String WHERE_NAME_IS_EQUAL = " WHERE name = @name";
@@ -73,12 +84,13 @@ public class FeatureRepository {
     }
 
     public void upsert(FeatureState featureState) {
-        Mutation.newInsertOrUpdateBuilder(tableName)
+        var upsertFeature = Mutation.newInsertOrUpdateBuilder(tableName)
                 .set("name").to(featureState.getFeature().name())
                 .set("enabled").to(featureState.isEnabled())
                 .set("strategyId").to(featureState.getStrategyId())
                 .set("strategyParameters").to(serializeParameters(featureState))
                 .build();
+        spannerClient.write(Collections.singletonList(upsertFeature));
     }
 
     private String serializeParameters(FeatureState featureState) {
